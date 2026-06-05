@@ -18,10 +18,9 @@ A full-cycle **Power BI sales analytics project** covering data gathering, norma
 
 ## 🎬 Demo Video
 
+![Dashboard Demo](screenshots/Overview.gif)
 
-![Dashboard Demo](screenshots\Overview.gif)
-![Dashboard Demo](screenshots\Performance.gif)
-
+![Performance Demo](screenshots/Performance.gif)
 
 ---
 
