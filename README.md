@@ -4,33 +4,23 @@ A full-cycle **Power BI sales analytics project** covering data gathering, norma
 
 ---
 
-## 📸 Screenshots
 
-> _Replace the placeholders below with your actual screenshots_
 
 ### Overview Page
-```
-[ INSERT SCREENSHOT: Overview page — KPI cards, treemap, column chart, area chart ]
-```
+
 ![Overview Page](screenshots/Overview.png)
 
 ### Performance Page
-```
-[ INSERT SCREENSHOT: Performance page — YTD/PYTD cards, waterfall chart, bar chart ]
-```
+
 ![Performance Page](screenshots/Performance.png)
 
 ---
 
 ## 🎬 Demo Video
 
-> _Replace the placeholder below with your actual demo video link_
 
-```
-[ INSERT VIDEO: Screen recording walkthrough of the full dashboard ]
-```
-[![Dashboard Demo](videos/Overview.mp4)
-[![Dashboard Demo](videos/Performance.mp4)
+[![Dashboard Demo](screenshots\Overview.gif)
+[![Dashboard Demo](screenshots\Performance.gif)
 
 
 ---
@@ -75,11 +65,12 @@ The flat file was split into **dimension tables** and a **fact table**:
 
 | Table | Type | Description |
 |---|---|---|
-| `data` | Fact | Core sales transactions — order ID, date, amounts, quantities |
+| `Sales` | Fact | Core sales transactions — order ID, date, amounts, quantities |
 | `Customers` | Dimension | Customer ID, name, segment |
 | `Products` | Dimension | Product ID, category, sub-category hierarchy |
 | `location` | Dimension | State, country/region hierarchy |
 | `top vs bottom` | Helper | Slicer table for top/bottom N filtering |
+| `Date` | Dimension | Date, year, month, month name, week day |
 
 ### Benefits of Normalization
 - Each customer, product, and location is stored **once** — no repeated text values
@@ -93,23 +84,7 @@ The flat file was split into **dimension tables** and a **fact table**:
 
 The tables are connected in a **star schema** with the `data` fact table at the center:
 ![data model](screenshots/model.png)
-```
-                    ┌─────────────┐
-                    │  Customers  │
-                    │  (segment)  │
-                    └──────┬──────┘
-                           │
-┌──────────┐    ┌──────────▼──────────┐    ┌──────────────┐
-│ Products │───▶│        data         │◀───│   location   │
-│(category)│    │  (fact: sales,      │    │(state/country│
-│(sub-cat) │    │   orders, dates)    │    │  hierarchy)  │
-└──────────┘    └─────────────────────┘    └──────────────┘
-                           │
-                    ┌──────┴──────┐
-                    │ top vs bottom│
-                    │  (slicer)   │
-                    └─────────────┘
-```
+
 
 Relationships are all **one-to-many** from dimension tables into the fact table, with **single-direction cross-filtering** to keep DAX measures predictable.
 
@@ -210,19 +185,19 @@ All KPIs and calculations are stored in a dedicated `__Measures` table so they a
 ```dax
 -- Total revenue across all transactions
 Total_Sales =
-SUM('data'[Sales])
+SUM('Sales'[Sales])
 ```
 
 ```dax
 -- Count of unique customers
 Customers_count =
-DISTINCTCOUNT('data'[Customer ID])
+DISTINCTCOUNT('Sales'[Customer ID])
 ```
 
 ```dax
 -- Count of unique orders
 Orders =
-DISTINCTCOUNT('data'[Order ID])
+DISTINCTCOUNT('Sales'[Order ID])
 ```
 
 ```dax
@@ -364,7 +339,7 @@ sales-analysis-dashboard/
 ├── README.md                     # This documentation file
 │
 ├── data/
-│   └── sales_raw.csv             # Original flat source file
+│   └── raw_data.csv             # Original flat source file
 │
 └── screenshots/
     ├── overview.png               # Overview page screenshot
